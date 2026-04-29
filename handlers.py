@@ -219,12 +219,12 @@ def _normalize_created_at(value: str) -> str:
 def _order_status_label(status: str, lang: str) -> str:
     st = (status or "").strip()
     if st in ("pending_payment", "receipt_sent"):
-        return "New"
+        return "Янги"
     if st == "completed":
-        return "Tasdiqlangan" if lang == "uz" else "Подтверждено"
+        return "Тасдикланган" if lang == "uz" else "Подтверждено"
     if st == "cancelled":
-        return "Bekor qilingan" if lang == "uz" else "Отменено"
-    return st or ("Noma'lum" if lang == "uz" else "Неизвестно")
+        return "Бекор килинган" if lang == "uz" else "Отменено"
+    return st or ("Номалум" if lang == "uz" else "Неизвестно")
 
 
 def _get_user_orders(user_id: int) -> list[dict]:
@@ -393,7 +393,7 @@ async def enter_name(message: Message, state: FSMContext):
 
     name = message.text.strip()
     if not name or len(name) < 2:
-        await message.answer("❌ Илтимос, тогри исм киритинг (камида 2 та харф):")
+        await message.answer("❌ Илтимос, тугри исм киритинг (камида 2 та харф):")
         return
 
     await state.update_data(name=name)
@@ -435,7 +435,7 @@ async def enter_phone_text(message: Message, state: FSMContext):
     # Basic phone validation
     cleaned = phone.replace("+", "").replace(" ", "").replace("-", "")
     if not cleaned.isdigit() or len(cleaned) < 9:
-        await message.answer("❌ Iltimos, to'g'ri telefon raqam kiriting:")
+        await message.answer("❌ Илтимос, тугри телефон ракам киритинг:")
         return
 
     await finish_registration(message, state, data, phone, lang)
@@ -472,7 +472,7 @@ async def menu_exchange(message: Message):
     await message.answer(t(lang, "exchange_menu"))
 
 
-@router.message(F.text.in_(["📊 Kurs", "📊 Курс"]))
+@router.message(F.text.in_(["📊 Курс", "📊 Курс"]))
 async def menu_rates(message: Message, bot: Bot):
     lang = get_lang(message.from_user.id)
     from database import load_db
@@ -504,7 +504,7 @@ async def menu_rates(message: Message, bot: Bot):
     await message.answer(text)
 
 
-@router.message(F.text.in_(["👥 Hamënlar", "👥 Партнёры"]))
+@router.message(F.text.in_(["👥 Хаменлар", "👥 Кошелки"]))
 async def menu_partners(message: Message):
     await send_partners_panel(message)
 
@@ -516,7 +516,7 @@ async def partners_add_start(message: Message, state: FSMContext):
     if lang == "ru":
         await message.answer("✏️ Какую валюту хотите добавить/изменить?\n\n" + _currency_help_text())
     else:
-        await message.answer("✏️ Qaysi valyuta hamyonini qo'shmoqchi/o'zgartirmoqchisiz?\n\n" + _currency_help_text())
+        await message.answer("✏️ Кайси валюта хаменини кушмокчи/узгартирмокчисиз?\n\n" + _currency_help_text())
 
 
 @router.message(PartnersState.waiting_currency_add)
@@ -527,34 +527,34 @@ async def partners_add_currency(message: Message, state: FSMContext):
         if lang == "ru":
             await message.answer("❌ Валюта не найдена. Повторите:\n\n" + _currency_help_text())
         else:
-            await message.answer("❌ Valyuta topilmadi. Qayta kiriting:\n\n" + _currency_help_text())
+            await message.answer("❌ Валюта топилмади. Кайта киритинг:\n\n" + _currency_help_text())
         return
     await state.update_data(partners_currency=cur["id"])
     await state.set_state(PartnersState.waiting_wallet_add)
     if lang == "ru":
         await message.answer(f"💳 {cur['name']} для вашего кошелька:\n\nВведите номер карты/адрес:")
     else:
-        await message.answer(f"💳 {cur['name']} uchun hamyon manzilini kiriting:")
+        await message.answer(f"💳 {cur['name']} учун хамен манзилини киритинг:")
 
 
 @router.message(PartnersState.waiting_wallet_add)
 async def partners_add_wallet(message: Message, state: FSMContext):
     value = (message.text or "").strip()
     if len(value) < 4:
-        await message.answer("❌ Qiymat juda qisqa. Qayta kiriting:")
+        await message.answer("❌ Киймат жуда киска. Кайта киритинг:")
         return
     data = await state.get_data()
     cur_id = data.get("partners_currency")
     if not cur_id:
         await state.clear()
-        await message.answer("❌ Jarayon tugadi. Qaytadan urinib ko'ring.")
+        await message.answer("❌ Жараен тугади. Кайтадан уриниб куринг.")
         return
     ok = _save_user_wallet(message.from_user.id, cur_id, value)
     await state.clear()
     if not ok:
-        await message.answer("❌ Saqlashda xatolik bo'ldi.")
+        await message.answer("❌ Саклашда хатолик булди.")
         return
-    await message.answer("✅ Hamyon saqlandi.")
+    await message.answer("✅ хамен сакланди.")
     await send_partners_panel(message)
 
 
