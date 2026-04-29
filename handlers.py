@@ -33,28 +33,28 @@ REFERRAL_HOME_BUTTONS = ["🏠 Бош меню", "🏠 Главное меню"]
 PARTNERS_ADD_BUTTONS = ["✏️ Кушиш / узгартириш", "✏️ Добавить / изменить"]
 PARTNERS_DELETE_BUTTONS = ["❌ учириш", "❌ Удалить"]
 SUPPORT_MENU_TEXTS = [
-    "💱 Валюта ", "💱 Обмен валют",
-    "📊 Kurs", "📊 Курс",
-    "👥 Hamënlar", "👥 Партнёры",
-    "👥 Referal", "👥 Реферал",
-    "⚙️ Sozlamalar", "⚙️ Настройки",
-    "📞 Qayta aloqa", "📞 Обратная связь",
-    "🔄 Almashuvlar", "🔄 Переводы",
-    "📖 Qo`llanma", "📖 Руководство",
-    "🔙 Orqaga", "🔙 Назад",
+    "💱 Валюта айирбошлаш", "💱 Обмен валют",
+    "📊 Курс", "📊 Курс",
+    "👥 Хаменлар", "👥 Партнёры",
+    "👥 Реферал", "👥 Реферал",
+    "⚙️ Созламалар", "⚙️ Настройки",
+    "📞 Кайта алока", "📞 Обратная связь",
+    "🔄 Алмашувлар", "🔄 Переводы",
+    "📖 Кулланма", "📖 Руководство",
+    "🔙 Оркага", "🔙 Назад",
 ]
 
 
 def referral_withdraw_kb(req_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="✅ Tasdiqlash", callback_data=f"RWD_OK_{req_id}")],
-        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data=f"RWD_NO_{req_id}")],
+        [InlineKeyboardButton(text="✅ Тасдиклаш", callback_data=f"RWD_OK_{req_id}")],
+        [InlineKeyboardButton(text="❌ Бекор килиш", callback_data=f"RWD_NO_{req_id}")],
     ])
 
 
 def support_admin_reply_kb(user_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="✍️ Javob yozish", callback_data=f"SUP_REPLY_{user_id}")]
+        [InlineKeyboardButton(text="✍️ жавоб езиш", callback_data=f"SUP_REPLY_{user_id}")]
     ])
 
 
@@ -66,7 +66,7 @@ def _support_header_text(message: Message) -> str:
     phone = user.get("phone", "—")
     created = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     return (
-        "📞 Qayta aloqa xabari\n\n"
+        "📞 Кайта алока хабари\n\n"
         f"👤 {full_name} ({username})\n"
         f"🆔 {user_id}\n"
         f"📞 {phone}\n"
@@ -106,11 +106,11 @@ async def send_referral_panel(message: Message, bot: Bot):
         )
     else:
         text = (
-            "👥 Sizning referal bo'limingiz\n\n"
-            f"🔗 Havola: {link}\n\n"
-            f"👤 Referallar soni: {referrals}\n"
-            f"💰 Bonus balansi: {bonus} so'm\n"
-            f"💳 Karta: {card}"
+            "👥 Сизнинг реферал хаволангиз\n\n"
+            f"🔗 хавола: {link}\n\n"
+            f"👤 Рефераллар сони: {referrals}\n"
+            f"💰 Бонус баланси: {bonus} so'm\n"
+            f"💳 Карта: {card}"
         )
     await message.answer(text, reply_markup=referral_inline_keyboard(lang))
 
@@ -176,7 +176,7 @@ def _delete_user_wallet(user_id: int, cur_id: str) -> bool:
 def _partners_text(user_id: int, lang: str) -> str:
     wallets = _get_user_wallets(user_id)
     empty = "пусто" if lang == "ru" else "bo'sh"
-    title = "📁 Список ваших кошельков:" if lang == "ru" else "📁 Sizning hamyonlaringiz:"
+    title = "📁 Список ваших кошельков:" if lang == "ru" else "📁 Сизнинг хаменларингиз:"
     lines = [title, ""]
     for cur in CURRENCIES:
         val = wallets.get(cur["id"], empty)
@@ -249,18 +249,18 @@ def _format_order_block(order: dict, lang: str) -> str:
     status = _order_status_label(order.get("status", ""), lang)
     created_at = _normalize_created_at(order.get("created_at", ""))
     return (
-        f"🆔 ID: {order.get('order_id', '—')}\n"
+        f"🆔 ИД: {order.get('order_id', '—')}\n"
         f"🔁 {order.get('from_name', '—')} → {order.get('to_name', '—')}\n"
         f"💰 {send_amount} → {recv_amount}\n"
-        f"📤 Yuboruvchi: {sender}\n"
-        f"📥 Qabul qiluvchi: {receiver}\n"
-        f"📅 Yaratilgan: {created_at}\n"
+        f"📤 Юборувчи: {sender}\n"
+        f"📥 Кабул килувчи: {receiver}\n"
+        f"📅 Яратилган: {created_at}\n"
         f"📌 {status}"
     )
 
 
 def _transfers_inline_kb(lang: str) -> InlineKeyboardMarkup:
-    text = "📣 Barcha almashuvlarni ko'rish" if lang == "uz" else "📣 Показать все обмены"
+    text = "📣 Барча алмашувларни кориш" if lang == "uz" else "📣 Показать все обмены"
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=text, callback_data="TR_ALL")]
     ])
@@ -277,7 +277,7 @@ def _paginate_order_blocks(blocks: list[str], lang: str, first_title: str) -> li
     for block in blocks:
         add = len(block) + (len(sep) if current_blocks else 0)
         if current_blocks and (current_len + add) > limit:
-            prefix = first_title if not pages else ("🔄 Davomi:" if lang == "uz" else "🔄 Продолжение:")
+            prefix = first_title if not pages else ("🔄 Давоми:" if lang == "uz" else "🔄 Продолжение:")
             pages.append(prefix + "\n\n" + sep.join(current_blocks))
             current_blocks = [block]
             current_len = len(block)
@@ -285,7 +285,7 @@ def _paginate_order_blocks(blocks: list[str], lang: str, first_title: str) -> li
             current_blocks.append(block)
             current_len += add
     if current_blocks:
-        prefix = first_title if not pages else ("🔄 Davomi:" if lang == "uz" else "🔄 Продолжение:")
+        prefix = first_title if not pages else ("🔄 Давоми:" if lang == "uz" else "🔄 Продолжение:")
         pages.append(prefix + "\n\n" + sep.join(current_blocks))
     return pages
 
@@ -325,7 +325,7 @@ async def cmd_start(message: Message, state: FSMContext, bot: Bot):
         user = get_user(user_id)
         if user and user.get("registered"):
             lang = user.get("lang", "uz")
-            await message.answer("👨‍💼 Xush kelibsiz, Admin!", reply_markup=main_menu_keyboard(lang))
+            await message.answer("👨‍💼 Хуш келибсиз, Админ!", reply_markup=main_menu_keyboard(lang))
             return
 
     user = get_user(user_id)
@@ -393,7 +393,7 @@ async def enter_name(message: Message, state: FSMContext):
 
     name = message.text.strip()
     if not name or len(name) < 2:
-        await message.answer("❌ Iltimos, to'g'ri ism kiriting (kamida 2 ta harf):")
+        await message.answer("❌ Илтимос, тогри исм киритинг (камида 2 та харф):")
         return
 
     await state.update_data(name=name)
@@ -408,7 +408,7 @@ async def enter_surname(message: Message, state: FSMContext):
 
     surname = message.text.strip()
     if not surname or len(surname) < 2:
-        await message.answer("❌ Iltimos, to'g'ri familiya kiriting (kamida 2 ta harf):")
+        await message.answer("❌ Илтимос, Тугри фамилия киритинг (kamida 2 ta harf):")
         return
 
     await state.update_data(surname=surname)
